@@ -1,0 +1,19 @@
+{
+  "name": "cervelet",
+  "version": "1.0.0",
+  "description": "UDP server to listen and send message to things",
+  "main": "cervelet.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sebascabot/cervelet.git"
+  },
+  "author": "Sébastien Cabot",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sebascabot/cervelet/issues"
+  },
+  "homepage": "https://github.com/sebascabot/cervelet#readme"
+}
