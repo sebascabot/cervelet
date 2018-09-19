@@ -4,15 +4,26 @@ Things are connected to a central point (cervelet) which dictate to others thing
 
 # Architecture
 
+Two main conponent:
+
+1. A single `cervelet` (SBC running UDP NodeJS server)
+2. 1 or more `things` (RFID reader, Lamp, etc.)
+
+# How it work
+
 - WiFi Network (without internet)
-- Each this send payload via UDP
-- The `cervelet` is a NodeJs app running on a SBC wich receive all UDP payload send by things and send back request to the `things`.
+- Each thing send a payload via UDP
+- The `cervelet` wich receive UDP payload send back UDP payload to `things` to say what to do next.
 
 # The `cervelet`
 
 It's a UDP server in NodeJS. The file is name `server.js`, so we can use `npm start` to lauch it.
 
+In this Repo, all is under `nodejs`
+
 # Things
+
+In this Repo, all is under `Arduino`
 
 - RFID Card reader (ESP8266)
 - Cervelet (Raspberry PI running a NodeJs UDP server)
