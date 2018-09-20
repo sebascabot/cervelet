@@ -36,13 +36,13 @@ In this Repo, all is under `Arduino`
 
 # Usefull Commands
 
-To explore things on the network (find their IP address)
+To find things on the network.
 
-    nmap -sn 10.11.12.0/24
+Scan network for IP address, mDNS #.local name, MAC Address
 
-To explore things on the network (find their MAC address)
-
-    arp
+    > nmap -sn 10.11.12.0/24
+    > arp # Slow
+    > arp -an # Quick
 
 # Zeroconf with Avahi implementation
 

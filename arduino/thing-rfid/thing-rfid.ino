@@ -1,15 +1,13 @@
 #include <ESP8266WiFi.h>
-#include <WiFiUdp.h>
+
 #include <SPI.h>
 #include <MFRC522.h>
 
-#define MY_SSID      "Papas"
-#define MY_PASSWORD  "PradoCabot"
+#include <ESP8266mDNS.h>
+#include <ArduinoOTA.h>
 
-#define UDP_PORT      41234
-// #define SERVER_IP     IPAddress (10,11,12,10)
-#define BROADCAST_IP  IPAddress (255, 255, 255, 255)
-// #define BROADCAST_IP = 
+#include "./_shared/MyOtaUpdate.h"
+#include "./_shared/MyNetworkSetup.h"
 
 #define SERIAL_SPEED     115200  // Baud rate (bit/s)
 #define MAIN_LOOP_DELAY  200    // In milli-seconds
@@ -46,20 +44,15 @@ volatile uint8_t irqRxCount = 0;
 uint8_t  rxCount = 0;
 uint32_t before = - (REPEAT_THRESHOLD + 1); // At init time, outdate 'before' to be over threshold.
 
-WiFiUDP udp;
-
 void setup() {
   Serial.begin(SERIAL_SPEED);
-
-  uint8_t setupTime = 0;
   while (!Serial) {
-    setupTime += 1;
+    ; // Wait
   }
-  Serial.println();
-  Serial.printf("Setup time: %d\n", setupTime);
+  Serial.println("\nSerial OK");
 
   Serial.printf("UDP Port: %d\n", UDP_PORT);
-  
+
   Serial.printf("before: %d\n", before);
 
   // Espressif ESP8266 -- WiFi MCU
@@ -68,17 +61,25 @@ void setup() {
   Serial.printf("WiFi MAC Address %s\n", WiFi.macAddress().c_str());
   Serial.printf("Free Sketch Space %d\n", ESP.getFreeSketchSpace() / 1024);
 
+  // OTA Update
+  MyOtaUpdate::setup("rfid");
+  
   // ESP8266 WiFi
-  WiFi.hostname("ThingRfid");
+  WiFi.hostname("thingRfid");
   WiFi.begin(MY_SSID, MY_PASSWORD);
 
   Serial.println("Connecting...");
-  while (WiFi.status() != WL_CONNECTED)
-  {
-    delay(200);
-    Serial.print(".");
+  //while (WiFi.status() != WL_CONNECTED) {
+  //  delay(200);
+  //  Serial.print(".");
+  //}
+
+  while (WiFi.waitForConnectResult() != WL_CONNECTED) {
+    Serial.println("Connection Failed! Rebooting in 2 sec...");
+    delay(2000);
+    ESP.restart();
   }
-  
+
   Serial.println();
   Serial.println("-----");
   WiFi.printDiag(Serial);
@@ -98,9 +99,15 @@ void setup() {
   // ESP8266: Setup IRQ Handler
   pinMode(IRQ_PIN, INPUT_PULLUP);                                      // Setup IRQ Pin
   attachInterrupt(digitalPinToInterrupt(IRQ_PIN), rxHandler, FALLING); // Activate interrupt
+
+  Serial.printf("mDNS Hostname: %s.local\n", ArduinoOTA.getHostname().c_str()); // Ex. ping myRfid.local
+  Serial.printf(" DNS Hostname: %s\n", WiFi.hostname().c_str());                // Ex. ping thingRfid
+
+
 }
 
 void loop() {
+
   if (irqRxCount != rxCount) {
     //Serial.printf("IrqRxCount: %d\n", irqRxCount);
 
@@ -123,12 +130,12 @@ void loop() {
         }
         json += String("]}");
         Serial.printf(">. Sending UDP JSON payload `%s`\n", json.c_str());
-      
+
         udp.beginPacket(BROADCAST_IP, UDP_PORT);
         udp.write(json.c_str());
         udp.endPacket();
-        
-        }
+
+      }
     }
 
     rxCount = irqRxCount;
@@ -141,7 +148,7 @@ void loop() {
   mfrc522.PCD_WriteRegister(mfrc522.FIFODataReg, mfrc522.PICC_CMD_REQA);
   mfrc522.PCD_WriteRegister(mfrc522.CommandReg, mfrc522.PCD_Transceive);
   mfrc522.PCD_WriteRegister(mfrc522.BitFramingReg, 0x87);
-
+  MyOtaUpdate::loop();
   delay(MAIN_LOOP_DELAY);
 }
 
