@@ -8,12 +8,6 @@ PASSWORD="PradoCabot"
 ADDRESS="10.11.12.0"
 NETMASK="24" # 24 <=> 254 Host
 
-# if [ "$EUID" -ne 0 ]
-# then
-#     echo "Must be root"
-#     exit
-# fi
-
 # Need `ipcalc` to extrac Network IP information
 if ! which ipcalc >> /dev/null
 then
@@ -43,73 +37,51 @@ echo "IP Netmask: $IP_NETMASK"   # Ex. 255.255.255.0
 # dpkg -s dnsmasq|awk '/^Version: /{print $2}' # To check install version
 
 # ------------------------------------------------------------------------------
+# Config `hostapd`
+SERVICE="hostapd"
+CONF="/etc/${SERVICE}/${SERVICE}.conf"
+
+sudo rm "${CONF}"
+if which ${SERVICE} >> /dev/null
+then
+  sudo apt remove --purge ${SERVICE} libnl-route-3-200 -y
+fi
+ps uxa|grep "${SERVICE}"
+
+# ------------------------------------------------------------------------------
+# Config `dnsmasq`
+SERVICE="dnsmasq"
+CONF="/etc/${SERVICE}.conf"
+if which ${SERVICE} >> /dev/null
+then
+  sudo apt remove --purge ${SERVICE} dns-root-data dnsmasq-base -y
+fi
+sudo rm ${CONF}
+ps uxa|grep "${SERVICE}"
+
+# ------------------------------------------------------------------------------
 # Config `dhcpcd`
 SERVICE="dhcpcd"
 CONF="/etc/${SERVICE}.conf"
 while read LINE; do
-  if ! grep -q "^${LINE}" ${CONF}
-  then
-    echo "$LINE" >> ${CONF}
-  fi
+  # sudo sed -i -- "s#${LINE}\r##g" ${CONF}
+  ESC_LINE=$(echo ${LINE} | sed 's#/#\\/#g')
+  sudo sed -i -- "/${ESC_LINE}/d" ${CONF}
 done <<EOF                                                                                                              
 nohook wpa_supplicant
 interface ${IF}
 static ip_address=${IP_HOST}/${NETMASK}
 static routers=${IP_HOST}
 EOF
-# Extra line to get DNS to work
-# static domain_name_servers=8.8.8.8
-sudo systemctl restart ${SERVICE}
-sudo systemctl status ${SERVICE}
 
 # ------------------------------------------------------------------------------
-# Config `dnsmasq`
-SERVICE="dnsmasq"
-CONF="/etc/${SERVICE}.conf"
-if ! which ${SERVICE} >> /dev/null
-then
-  sudo apt install ${SERVICE} -yqq
-fi
-sudo tee ${CONF} >/dev/null <<EOF
-interface=${IF}
-domain-needed
-bogus-priv
-dhcp-range=${IP_DHCP_MIN},${IP_DHCP_MAX},${IP_NETMASK},12h
-EOF
-cat ${CONF} # Debug
+# Attempt to Bring back wlan0 (in order to get /var/run/wpa_supplicant back)
+# BUMMER! Not working, must reboot
+sudo ip addr flush dev wlan0 # Remove static IP
+sudo ifconfig wlan0 up # Bring it back to life ???
+
 sudo systemctl restart ${SERVICE}
 sudo systemctl status ${SERVICE}
-
-# ------------------------------------------------------------------------------
-# Config `hostapd`
-SERVICE="hostapd"
-CONF="/etc/${SERVICE}/${SERVICE}.conf"
-
-if ! which ${SERVICE} >> /dev/null
-then
-  sudo apt install ${SERVICE}
-fi
-sudo tee ${CONF} >/dev/null <<EOF
-interface=${IF}
-ssid=${SSID}
-wpa_passphrase=${PASSWORD}
-driver=nl80211
-hw_mode=g
-channel=6
-wmm_enabled=0
-macaddr_acl=0
-auth_algs=1
-ignore_broadcast_ssid=0
-wpa=2
-wpa_key_mgmt=WPA-PSK
-wpa_pairwise=TKIP
-rsn_pairwise=CCMP
-EOF
-sudo sed -i -- 's/#DAEMON_CONF=""/DAEMON_CONF="\/etc\/hostapd\/hostapd.conf"/g' /etc/default/hostapd
-sudo systemctl restart ${SERVICE}
-sudo systemctl status ${SERVICE}
-ps uxa|grep "${SERVICE}"
-# sudo service ${SERVIE} restart
 
 # ------------------------------------------------------------------------------
 # Status
@@ -118,4 +90,4 @@ echo "------"
 echo "Status"
 echo "------"
 iwconfig ${IF}
-# wpa_cli -i ${IF} status # Should report an error if OK
+wpa_cli -i ${IF} status # Should not report an error
