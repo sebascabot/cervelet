@@ -3,8 +3,8 @@
 #include <SPI.h>
 #include <MFRC522.h>
 
-#define MY_SSID      "PapasInventeurs"
-#define MY_PASSWORD  "JamesDyson"
+#define MY_SSID      "Papas"
+#define MY_PASSWORD  "PradoCabot"
 
 #define UDP_PORT      41234
 // #define SERVER_IP     IPAddress (10,11,12,10)
