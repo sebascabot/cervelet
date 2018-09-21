@@ -43,7 +43,8 @@ class MyOtaUpdate {
         }
       });
       ArduinoOTA.begin();
-  }
+      Serial.printf("Hostname: %s.local\n", ArduinoOTA.getHostname().c_str());
+    }
 
     static void loop () {
       ArduinoOTA.handle();
