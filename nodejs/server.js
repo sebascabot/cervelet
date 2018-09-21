@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+const player = require('play-sound')(opts = {})
+
 // Configuration
 const PORT = 41234
 const HOST = '255.255.255.255'
@@ -30,6 +32,7 @@ server
             if (action) {
                 action()
             } else {
+                player.play('./snd/ding.mp3')
                 console.log(`No action bind to cardId '${cardId}'`)
             }
         }

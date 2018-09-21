@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/sebascabot/cervelet/issues"
   },
-  "homepage": "https://github.com/sebascabot/cervelet#readme"
+  "homepage": "https://github.com/sebascabot/cervelet#readme",
+  "dependencies": {
+    "play-sound": "^1.1.2"
+  }
 }
