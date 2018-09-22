@@ -20,6 +20,7 @@ server
         server.close()
     })
     .on('message', (payload, rinfo) => {
+        player.play('./snd/Pop.wav')
         payload = JSON.parse(payload)
 
         console.log(rinfo)
