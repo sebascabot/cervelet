@@ -52,3 +52,9 @@ The bash script `./tools/setup-access-point.sh` the process of this tedious and 
 Screen Resolution: 1920x1080
 
 To scan WiFi Network on Linux, `sudo iw dev wlo1 scan|grep SSID`, then to see more info about it `nmcli dev wifi list`.
+
+# Requirement
+#
+Install PulseAudio#
+
+     > sudo apt install pulseaudio
