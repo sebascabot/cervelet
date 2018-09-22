@@ -76,18 +76,27 @@ void loop() {
       Serial.printf("Skip. (Same card, since less than 600 ms, got %d ms)\n", elapsed);
     } else {
       if ( mfrc522.PICC_ReadCardSerial()) {
+        String rfidStr;
+        for (byte i = 0; i < mfrc522.uid.size; ++i) {
+          char byteInHex[3];
+
+          sprintf(byteInHex, "%02X", mfrc522.uid.uidByte[i]);
+          if (i > 0) {
+            rfidStr.concat(':');
+          }
+          rfidStr.concat(byteInHex);
+        }
+
         StaticJsonDocument<200> doc;
         JsonObject root = doc.to<JsonObject>();
         root["seq"] = ++seq;
         root["from"] = THING;
         root["to"] = "hub";
-        JsonArray rfid = root.createNestedArray("rfid");
-        rfid.copyFrom(mfrc522.uid.uidByte, mfrc522.uid.size);
+        root["rfid"] = rfidStr;
         MyNetwork::sendJson(root);
 
-
         // mfrc522.PICC_DumpToSerial(&(mfrc522.uid));
-        Serial.print("RFID UID < ");
+        Serial.print("RFID < ");
         for (byte i = 0; i < mfrc522.uid.size; ++i) {
           Serial.printf("%02X ", mfrc522.uid.uidByte[i]);
         }

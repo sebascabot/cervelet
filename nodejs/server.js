@@ -13,7 +13,7 @@ const rfid2action = {
     '36:1A:E5:54': () => setColor([0, 0, MAX]),
     'E6:CC:DE:54': () => setColor([MAX, MAX, 0]),
     '65:95:77:44': () => setColor([MAX, MAX, MAX]),
-    '45:A7:38:44': () => player.play('./media/Mike Posner - I Took A Pill In Ibiza.mp3'),
+    '45:A7:38:44': () => player.play(P('./media/Mike Posner - I Took A Pill In Ibiza.mp3')),
 }
 
 // Built-in lib
@@ -21,6 +21,9 @@ const dgram = require('dgram')
 
 const server = dgram.createSocket('udp4')
 
+function P (p) {
+    return require('path').resolve(__dirname, p)
+}
 
 server
     .bind(PORT, () => {
@@ -40,14 +43,13 @@ server
         console.log(payload)
 
         if(payload.from === 'rfid') {
-            const rfid = payload.rfid.map(x => ("0" + x.toString(16)).slice(-2).toUpperCase()).join(':')
-            const action = rfid2action[rfid]
+            const action = rfid2action[payload.rfid]
             if (action) {
-                player.play('./snd/Pop.wav')
+                player.play(P('./snd/Pop.wav'))
                 action()
             } else {
-                player.play('./snd/Laser2.wav')
-                console.log(`WARNING: rfid '${rfid}' not in DB.`)
+                player.play(P('./snd/Laser2.wav'))
+                console.log(`WARNING: rfid '${payload.rfid}' not in DB.`)
             }
         }
     })
