@@ -16,8 +16,8 @@ WiFiUDP udp;
 // WiFi Config
 
 // 192.168.0.x (ZyXEL EMG2926 --- Videotron)
-#define MY_SSID      "VIDEOTRON6044"
-#define MY_PASSWORD  "3MAMRAXAKY39M"
+// #define MY_SSID      "VIDEOTRON6044"
+// #define MY_PASSWORD  "3MAMRAXAKY39M"
 
 // 192.168.20.x (D-Link DIR-615 Router --- For Mirobot)
 // #define MY_SSID      "Mirobot"
@@ -28,8 +28,8 @@ WiFiUDP udp;
 // #define MY_PASSWORD  "PradoCabot"
 
 // x.x.x.x (ASUS RT-N66U)
-// #define MY_SSID      "PapasInventeurs"
-// #define MY_PASSWORD  "JamesDyson"
+#define MY_SSID      "PapasInventeurs"
+#define MY_PASSWORD  "JamesDyson"
 
 // x.x.x.x (TRENDnet - TEW-731BR)
 // #define MY_SSID      "???"

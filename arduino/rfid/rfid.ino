@@ -50,8 +50,11 @@ void setup() {
   // NXP MFRC522 -- Contactless Reader IC -- PCD(Proximity Coupling Device):
   SPI.begin();          // Init SPI bus
   mfrc522.PCD_Init();   // Init MFRC522
+
+  Serial.println("----");
   Serial.print("MFRC522 ");
   mfrc522.PCD_DumpVersionToSerial();
+  Serial.println("----");
 
   // MFRC522: Enabled IRQ on Rx
   mfrc522.PCD_WriteRegister(mfrc522.ComIEnReg, (1 << IRQINV_BIT | 1 << RXIEN_BIT));
@@ -67,13 +70,13 @@ void loop() {
   MyOtaUpdate::loop();
 
   if (irqRxCount != rxCount) {
-    Serial.printf("IrqRxCount: %d\n", irqRxCount);
+    // Serial.printf("IrqRxCount: %d\n", irqRxCount);
 
     uint32_t elapsed = millis() - before;
     before = millis();
 
     if (elapsed < REPEAT_THRESHOLD) {
-      Serial.printf("Skip. (Same card, since less than 600 ms, got %d ms)\n", elapsed);
+      // Serial.printf("Skip. (Same card, since less than 600 ms, got %d ms)\n", elapsed);
     } else {
       if ( mfrc522.PICC_ReadCardSerial()) {
         String rfidStr;
@@ -96,11 +99,14 @@ void loop() {
         MyNetwork::sendJson(root);
 
         // mfrc522.PICC_DumpToSerial(&(mfrc522.uid));
-        Serial.print("RFID < ");
+        Serial.print("RFID ");
         for (byte i = 0; i < mfrc522.uid.size; ++i) {
-          Serial.printf("%02X ", mfrc522.uid.uidByte[i]);
+          if (i) {
+            Serial.print(':');
+          }
+          Serial.printf("%02X", mfrc522.uid.uidByte[i]);
         }
-        Serial.println(">");
+        Serial.println();
       }
     }
 
