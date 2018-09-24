@@ -132,13 +132,13 @@ void getPayload () {
 }
 
 void processPayload (JsonObject root) {
-  int16_t red = root["red"];
-  int16_t green = root["green"];
-  int16_t blue = root["blue"];
+  int16_t r = root["r"];
+  int16_t g = root["g"];
+  int16_t b = root["b"];
 
-  Serial.printf("RGB = %d, %d, %d\n", red, green, blue);
+  Serial.printf("RGB = %d, %d, %d\n", r, g, b);
 
-  analogWrite(RGB_RED_PIN, red);
-  analogWrite(RGB_GREEN_PIN, green);
-  analogWrite(RGB_BLUE_PIN, blue);
+  analogWrite(RGB_RED_PIN, r);
+  analogWrite(RGB_GREEN_PIN, g);
+  analogWrite(RGB_BLUE_PIN, b);
 }
