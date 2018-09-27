@@ -41,24 +41,34 @@ const rfid2action = {
     '65:83:DA:54': () => doPlaySound('Bleat-SoundBible.com-893851569.mp3'),
     '04:38:68:A2:C8:48:80': () => doPlaySound('Frog Croaking-SoundBible.com-1053984354.mp3'),
     '04:3E:68:A2:C8:48:80': () => doPlaySound('Cat_Meowing_2-Mr_Smith-780889994.mp3'),
+    'B6:4B:0E:4B': () => {
+        doSendTo('eqbe5', {speed: 0})
+        doSendTo('eqbe8', {speed: 0})
+    },
     '96:2E:DF:54': () => {
         doSendTo('eqbe5', {brightness: 0})
+        doSendTo('eqbe8', {brightness: 0})
     },
     '56:41:DD:54': () => {
         doSendTo('eqbe5', {pattern: 'juggle'})
+        doSendTo('eqbe8', {pattern: 'juggle'})
     },
     '66:E6:F4:4A': () => {
         doSendTo('eqbe5', {pattern: 'bpm'})
+        doSendTo('eqbe8', {pattern: 'bpm'})
     },
     '66:2A:1A:4B': () => {
         doSendTo('eqbe5', {pattern: 'sinelon'})
+        doSendTo('eqbe8', {pattern: 'sinelon'})
     },
     '16:30:FC:4A': () => {
         doSendTo('eqbe5', {pattern: 'confetti'})
+        doSendTo('eqbe8', {pattern: 'confetti'})
     },
     'C6:6F:F3:4A': () => {
         doSendTo('ico', {pattern: 'rainbow'})
-        doSendTo('eqbe5', {pattern: 'rainbow', hue: 100, brightness: 50})
+        doSendTo('eqbe5', {pattern: 'rainbow'})
+        doSendTo('eqbe8', {pattern: 'rainbow'})
     },
     'D0:C8:13:33': () => {
         doSendTo('owl', {r: 0, g: 0, b: 0})
@@ -68,22 +78,28 @@ const rfid2action = {
         doSendTo('owl', {r: RGB_MAX_OWL, g: 0, b: 0})
         doSendTo('ico', {r: RGB_MAX, g: 0, b: 0})
         doSendTo('eqbe5', {pattern: 'solid', hue: HUE.red, speed: 0})
+        doSendTo('eqbe8', {pattern: 'solid', hue: HUE.red, speed: 0})
     },
     '36:6F:F3:4A': () => {
         doSendTo('owl', {r: 0, g: RGB_MAX_OWL, b: 0})
         doSendTo('ico', {r: 0, g: RGB_MAX, b: 0})
         doSendTo('eqbe5', {pattern: 'solid', hue: HUE.greenYellow, speed: 0})
+        doSendTo('eqbe8', {pattern: 'solid', hue: HUE.greenYellow, speed: 0})
     },
     'E6:CC:DE:54': () => {
         doSendTo('owl', {r: RGB_MAX_OWL, g: RGB_MAX_OWL, b: 0})
         doSendTo('ico', {r: RGB_MAX, g: RGB_MAX, b: 0})
         doSendTo('eqbe5', {pattern: 'solid', hue: HUE.yellow, speed: 0})
+        doSendTo('eqbe8', {pattern: 'solid', hue: HUE.yellow, speed: 0})
     },
     'E6:05:DE:54': () => {
         doSendTo('owl', {r: RGB_MAX_OWL, g: RGB_MAX_OWL, b: RGB_MAX_OWL})
         doSendTo('ico', {r: RGB_MAX, g: RGB_MAX, b: RGB_MAX})
         doSendTo('eqbe5', {pattern: 'solid', saturation: 0, speed: 0})
+        doSendTo('eqbe8', {pattern: 'solid', saturation: 0, speed: 0})
     },
+    '05:87:48:44': () => doPlayTrack("Love Song Beautiful Chinese Song-25uLhe4gl8Q.mp3"),
+    'D5:25:92:44': () => doPlayTrack("Rag'n'Bone Man - Human (Official Video)-L3wKzyIN1yk.mp3"),
     'A5:CB:6C:44': () => doPlayTrack('Camila Cabello - Havana (Audio) ft. Young Thug-HCjNJDNzw8Y.mp3'),
     'E5:B3:48:44': () => doPlayTrack('Patte patrouille.mp3'),
     '45:A7:38:44': () => doPlayTrack('Mike Posner - I Took A Pill In Ibiza.mp3'),
