@@ -18,18 +18,18 @@ const mdp = {
 }
 
 const HUE = {
-    red: 0,
-    yellowRed: 30,
-    yellow: 60,
-    greenYellow: 90,
-    green:120,
-    cyanGreen: 150,
-    cyan: 180,
-    blueCyan: 210,
-    blue: 240,
-    magentaBlue: 270,
-    magenta: 300,
-    redMagenta: 330,
+    red:           0,
+    yellowRed:    21, // [0-360] => 30,
+    yellow:       43, // [0-360] => 60,
+    greenYellow:  64, // [0-360] => 90,
+    green:        85, // [0-360] => 120,
+    cyanGreen:   107, // [0-360] => 150,
+    cyan:        128, // [0-360] => 180,
+    blueCyan:    149, // [0-360] => 210,
+    blue:        171, // [0-360] => 240,
+    magentaBlue: 192, // [0-360] => 270,
+    magenta:     213, // [0-360] => 300,
+    redMagenta:  235, // [0-360] => 330,
 }
 
 const RGB_MAX_OWL = 1023 // MAX PWM for maximum intensity
@@ -92,9 +92,9 @@ const rfid2action = {
     },
     '36:6F:F3:4A': () => {
         doSendTo('owl', {r: 0, g: RGB_MAX_OWL, b: 0})
-        doSendTo('ico', {pattern: 'solid', hue: HUE.greenYellow})
-        doSendTo('eqbe5', {pattern: 'solid', hue: HUE.greenYellow, speed: 0})
-        doSendTo('eqbe8', {pattern: 'solid', hue: HUE.greenYellow, speed: 0})
+        doSendTo('ico', {pattern: 'solid', hue: HUE.green})
+        doSendTo('eqbe5', {pattern: 'solid', hue: HUE.green, speed: 0})
+        doSendTo('eqbe8', {pattern: 'solid', hue: HUE.green, speed: 0})
     },
     'E6:CC:DE:54': () => {
         doSendTo('owl', {r: RGB_MAX_OWL, g: RGB_MAX_OWL, b: 0})
