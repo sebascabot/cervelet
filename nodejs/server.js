@@ -60,41 +60,51 @@ const rfid2action = {
     '66:2A:1A:4B': () => {
         doSendTo('eqbe5', {pattern: 'sinelon'})
         doSendTo('eqbe8', {pattern: 'sinelon'})
+        doSendTo('ico', {pattern: 'sinelon'})
     },
     '16:30:FC:4A': () => {
         doSendTo('eqbe5', {pattern: 'confetti'})
         doSendTo('eqbe8', {pattern: 'confetti'})
+        doSendTo('ico', {pattern: 'confetti'})
     },
     'C6:6F:F3:4A': () => {
         doSendTo('ico', {pattern: 'rainbow'})
-        doSendTo('eqbe5', {pattern: 'rainbow'})
+        doSendTo('eqbe5', {pattern: 'rainbow', brightness: 50})
         doSendTo('eqbe8', {pattern: 'rainbow'})
+    },
+    '06:1A:E4:54': () => {
+        doSendTo('ico', {pattern: 'pulse', hue: HUE.red})
+    },
+    '46:3E:FB:4A': () => {
+        doSendTo('ico', {pattern: 'rainbow-glitter'})
     },
     'D0:C8:13:33': () => {
         doSendTo('owl', {r: 0, g: 0, b: 0})
-        doSendTo('ico', {r: 0, g: 0, b: 0})
+        doSendTo('ico', {brightness: 0})
+        doSendTo('eqbe5', {brightness: 0})
+        doSendTo('eqbe8', {brightness: 0})
     },
     'F6:28:10:4B': () => { // Solid: RED
         doSendTo('owl', {r: RGB_MAX_OWL, g: 0, b: 0})
-        doSendTo('ico', {r: RGB_MAX, g: 0, b: 0})
+        doSendTo('ico', {pattern: 'solid', hue: HUE.red})
         doSendTo('eqbe5', {pattern: 'solid', hue: HUE.red, speed: 0})
         doSendTo('eqbe8', {pattern: 'solid', hue: HUE.red, speed: 0})
     },
     '36:6F:F3:4A': () => {
         doSendTo('owl', {r: 0, g: RGB_MAX_OWL, b: 0})
-        doSendTo('ico', {r: 0, g: RGB_MAX, b: 0})
+        doSendTo('ico', {pattern: 'solid', hue: HUE.greenYellow})
         doSendTo('eqbe5', {pattern: 'solid', hue: HUE.greenYellow, speed: 0})
         doSendTo('eqbe8', {pattern: 'solid', hue: HUE.greenYellow, speed: 0})
     },
     'E6:CC:DE:54': () => {
         doSendTo('owl', {r: RGB_MAX_OWL, g: RGB_MAX_OWL, b: 0})
-        doSendTo('ico', {r: RGB_MAX, g: RGB_MAX, b: 0})
+        doSendTo('ico', {pattern: 'solid', hue: HUE.yellow})
         doSendTo('eqbe5', {pattern: 'solid', hue: HUE.yellow, speed: 0})
         doSendTo('eqbe8', {pattern: 'solid', hue: HUE.yellow, speed: 0})
     },
     'E6:05:DE:54': () => {
         doSendTo('owl', {r: RGB_MAX_OWL, g: RGB_MAX_OWL, b: RGB_MAX_OWL})
-        doSendTo('ico', {r: RGB_MAX, g: RGB_MAX, b: RGB_MAX})
+        doSendTo('ico', {pattern: 'solid', saturation: 0})
         doSendTo('eqbe5', {pattern: 'solid', saturation: 0, speed: 0})
         doSendTo('eqbe8', {pattern: 'solid', saturation: 0, speed: 0})
     },
@@ -206,9 +216,9 @@ function doPlaySound (sound) {
     })
     .on('data', data => response += data)
     .on('close', () => {
-        const expect = 'OK MPD 0.19.0\nOK\nOK\nOK\n'
-        if (response !== expect) {
-            console.log(`  PROBLEM!\n    Got >${response}<\n  but expect\n    >${expect}<\n`)
+        const re = /OK MPD 0.\d\d.0\nOK\nOK\nOK\n/m
+        if (!response.match(re)) {
+            console.log(`  PROBLEM!\n    Got >${response}<\n  but expect\n    >${re}<\n`)
         }
     })
 }
@@ -229,9 +239,9 @@ function doPlayTrack (track) {
     })
     .on('data', data => response += data)
     .on('close', () => {
-        const expect = 'OK MPD 0.19.0\nOK\nOK\nOK\nOK\n'
-        if (response !== expect) {
-            console.log(`  PROBLEM!\n    Got >${response}<\n  but expect\n    >${expect}<\n`)
+        const re = /OK MPD 0.\d\d.0\nOK\nOK\nOK\nOK\n/m
+        if (!response.match(re)) {
+            console.log(`  PROBLEM!\n    Got >${response}<\n  but expect\n    >${re}<\n`)
         }
     })
 }
@@ -246,9 +256,9 @@ function doPlay () {
     })
     .on('data', data => response += data)
     .on('close', () => {
-        const expect = 'OK MPD 0.19.0\nOK\n'
-        if (response !== expect) {
-            console.log(`  PROBLEM!\n    Got >${response}<\n  but expect\n    >${expect}<\n`)
+        const re = /OK MPD 0.\d\d.0\nOK\n/m
+        if (!response.match(re)) {
+            console.log(`  PROBLEM!\n    Got >${response}<\n  but expect\n    >${re}<\n`)
         }
     })
 }
@@ -263,9 +273,9 @@ function doStop () {
     })
     .on('data', data => response += data)
     .on('close', () => {
-        const expect = 'OK MPD 0.19.0\nOK\n'
-        if (response !== expect) {
-            console.log(`  PROBLEM!\n    Got >${response}<\n  but expect\n    >${expect}<\n`)
+        const re = /OK MPD 0.\d\d.0\nOK\n/m
+        if (!response.match(re)) {
+            console.log(`  PROBLEM!\n    Got >${response}<\n  but expect\n    >${re}<\n`)
         }
     })
 }
