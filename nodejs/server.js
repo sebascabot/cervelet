@@ -180,10 +180,22 @@ server
 
         if(payload.from === 'ico') {
             if (payload.accel === 'toc') {
-                doPlaySound('Smashing-Yuri_Santana-1233262689.mp3');
+                doPlaySound('Smashing-Yuri_Santana-1233262689.mp3')
             }
             if (payload.status === 'sleep') {
-                doPlaySound('Good Bye Female-SoundBible.com-894885957.mp3');
+                doPlaySound('Good Bye Female-SoundBible.com-894885957.mp3')
+            }
+        }
+
+        if(payload.from === 'eqbe5') {
+            if (payload.accel) {
+                if (payload.accel === 'Face 6 (LEDs down)') {
+                    doSendTo('eqbe5', {brightness: 0})
+                } else if (payload.accel === 'Face 5 (LEDs up)') {
+                    doSendTo('eqbe5', {pattern: 'solid', saturation: 0, speed: 0})
+                } else {
+                    doSendTo('eqbe5', {pattern: 'sinelon', speed: 88})
+                }
             }
         }
     })
@@ -211,7 +223,7 @@ function doPlaySound (sound) {
             `add "${sound}"`,
             'play',
             '',
-        ].join('\n'));
+        ].join('\n'))
         console.log(`  Playing sound '${sound}'`)
     })
     .on('data', data => response += data)
@@ -234,7 +246,7 @@ function doPlayTrack (track) {
             `add "${track}"`,
             'play',
             '',
-        ].join('\n'));
+        ].join('\n'))
         console.log(`  Playing track '${track}'`)
     })
     .on('data', data => response += data)
