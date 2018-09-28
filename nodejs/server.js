@@ -46,6 +46,7 @@ const rfid2action = {
         doSendTo('eqbe8', {speed: 0})
     },
     '96:2E:DF:54': () => {
+        doSendTo('ico', {brightness: 0})
         doSendTo('eqbe5', {brightness: 0})
         doSendTo('eqbe8', {brightness: 0})
     },
@@ -69,20 +70,20 @@ const rfid2action = {
     },
     'C6:6F:F3:4A': () => {
         doSendTo('ico', {pattern: 'rainbow'})
-        doSendTo('eqbe5', {pattern: 'rainbow', brightness: 50})
+        doSendTo('eqbe5', {pattern: 'rainbow', brightness: 15})
         doSendTo('eqbe8', {pattern: 'rainbow'})
     },
     '06:1A:E4:54': () => {
-        doSendTo('ico', {pattern: 'pulse', hue: HUE.red})
+        doSendTo('ico', {pattern: 'pulse', hue: HUE.magenta})
     },
     '46:3E:FB:4A': () => {
         doSendTo('ico', {pattern: 'rainbow-glitter'})
     },
     'D0:C8:13:33': () => {
         doSendTo('owl', {r: 0, g: 0, b: 0})
-        doSendTo('ico', {brightness: 0})
-        doSendTo('eqbe5', {brightness: 0})
-        doSendTo('eqbe8', {brightness: 0})
+        doSendTo('ico', {brightness: 80})
+        doSendTo('eqbe5', {brightness: 70})
+        doSendTo('eqbe8', {brightness: 70})
     },
     'F6:28:10:4B': () => { // Solid: RED
         doSendTo('owl', {r: RGB_MAX_OWL, g: 0, b: 0})
@@ -191,10 +192,23 @@ server
             if (payload.accel) {
                 if (payload.accel === 'Face 6 (LEDs down)') {
                     doSendTo('eqbe5', {brightness: 0})
+                    doSendTo('eqbe8', {brightness: 0})
+                    doSendTo('ico', {brightness: 0})
                 } else if (payload.accel === 'Face 5 (LEDs up)') {
                     doSendTo('eqbe5', {pattern: 'solid', saturation: 0, speed: 0})
-                } else {
+                    doSendTo('ico', {brightness: 85})
+                    doSendTo('ico', {pattern: 'solid', saturation: 0, speed: 0})
+                } else if (payload.accel === 'Face 1') {
+                    doSendTo('eqbe5', {pattern: 'confetti'})
+                    doSendTo('ico', {pattern: 'confetti'})
+                } else if (payload.accel === 'Face 2') {
+                    doSendTo('eqbe5', {pattern: 'rainbow'})
+                    doSendTo('ico', {pattern: 'rainbow'})
+                } else if (payload.accel === 'Face 3') {
                     doSendTo('eqbe5', {pattern: 'sinelon', speed: 88})
+                    doSendTo('ico', {pattern: 'sinelon', speed: 88})
+                } else if (payload.accel === 'Face 4') {
+                    doSendTo('eqbe5', {pattern: 'solid', speed: 1, brightness: 33})
                 }
             }
         }
