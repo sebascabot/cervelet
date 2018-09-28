@@ -6,7 +6,7 @@
 #include "./_shared/MyOtaUpdate.h"
 #include "./_shared/MySerial.h"
 
-#define THING  "eqbe5"
+#define THING  "eqbe8"
 
 // External Library
 #define FASTLED_ESP8266_RAW_PIN_ORDER
@@ -19,8 +19,8 @@ FASTLED_USING_NAMESPACE
 
 // LED Section
 
-#define LED_TYPE    PL9823 // vs WS2812B
-#define COLOR_ORDER RGB
+#define LED_TYPE    WS2812B // vs PL9823
+#define COLOR_ORDER GRB
 
 #define DEFAULT_BRIGHTNESS   50
 #define DEFAULT_SPEED       100       // Range [0 to 1000]
@@ -32,7 +32,7 @@ FASTLED_USING_NAMESPACE
 #define FRAME_TIME (1000 / 40) // (1000 ms / 40 frames) = 25 ms / frame
 #define RESOLUTION 1000        // 1000 div/s
 
-#define EDGE_LEDS  5
+#define EDGE_LEDS  8
 #define NUM_LEDS   (EDGE_LEDS * EDGE_LEDS)
 CRGB leds[NUM_LEDS];
 
