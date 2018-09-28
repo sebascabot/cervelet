@@ -32,9 +32,6 @@ const HUE = {
     redMagenta:  235, // [0-360] => 330,
 }
 
-const RGB_MAX_OWL = 1023 // MAX PWM for maximum intensity
-const RGB_MAX = 255
-
 const rfid2action = {
     'F6:14:DD:54': doPlay,
     '36:1A:E5:54': doStop,
@@ -59,6 +56,8 @@ const rfid2action = {
         doSendTo('eqbe8', {pattern: 'bpm'})
     },
     '66:2A:1A:4B': () => {
+        doSendTo('heart', {pattern: 'sinelon'})
+        doSendTo('rainbow', {pattern: 'sinelon'})
         doSendTo('eqbe5', {pattern: 'sinelon'})
         doSendTo('eqbe8', {pattern: 'sinelon'})
         doSendTo('ico', {pattern: 'sinelon'})
@@ -69,9 +68,12 @@ const rfid2action = {
         doSendTo('ico', {pattern: 'confetti'})
     },
     'C6:6F:F3:4A': () => {
+        doSendTo('owl', {pattern: 'rainbow'})
         doSendTo('ico', {pattern: 'rainbow'})
         doSendTo('eqbe5', {pattern: 'rainbow', brightness: 15})
         doSendTo('eqbe8', {pattern: 'rainbow'})
+        doSendTo('rainbow', {pattern: 'rainbow'})
+        doSendTo('heart', {pattern: 'rainbow'})
     },
     '06:1A:E4:54': () => {
         doSendTo('ico', {pattern: 'pulse', hue: HUE.magenta})
@@ -80,31 +82,31 @@ const rfid2action = {
         doSendTo('ico', {pattern: 'rainbow-glitter'})
     },
     'D0:C8:13:33': () => {
-        doSendTo('owl', {r: 0, g: 0, b: 0})
+        doSendTo('owl', {brightness: 80})
         doSendTo('ico', {brightness: 80})
         doSendTo('eqbe5', {brightness: 70})
         doSendTo('eqbe8', {brightness: 70})
     },
     'F6:28:10:4B': () => { // Solid: RED
-        doSendTo('owl', {r: RGB_MAX_OWL, g: 0, b: 0})
+        doSendTo('owl', {pattern: 'solid', hue: HUE.red, speed: 0})
         doSendTo('ico', {pattern: 'solid', hue: HUE.red})
         doSendTo('eqbe5', {pattern: 'solid', hue: HUE.red, speed: 0})
         doSendTo('eqbe8', {pattern: 'solid', hue: HUE.red, speed: 0})
     },
     '36:6F:F3:4A': () => {
-        doSendTo('owl', {r: 0, g: RGB_MAX_OWL, b: 0})
+        doSendTo('owl', {pattern: 'solid', hue: HUE.green, speed: 0})
         doSendTo('ico', {pattern: 'solid', hue: HUE.green})
         doSendTo('eqbe5', {pattern: 'solid', hue: HUE.green, speed: 0})
         doSendTo('eqbe8', {pattern: 'solid', hue: HUE.green, speed: 0})
     },
     'E6:CC:DE:54': () => {
-        doSendTo('owl', {r: RGB_MAX_OWL, g: RGB_MAX_OWL, b: 0})
+        doSendTo('owl', {pattern: 'solid', hue: HUE.yellow, speed: 0})
         doSendTo('ico', {pattern: 'solid', hue: HUE.yellow})
         doSendTo('eqbe5', {pattern: 'solid', hue: HUE.yellow, speed: 0})
         doSendTo('eqbe8', {pattern: 'solid', hue: HUE.yellow, speed: 0})
     },
     'E6:05:DE:54': () => {
-        doSendTo('owl', {r: RGB_MAX_OWL, g: RGB_MAX_OWL, b: RGB_MAX_OWL})
+        doSendTo('owl', {pattern: 'solid', saturation: 0, speed: 0})
         doSendTo('ico', {pattern: 'solid', saturation: 0})
         doSendTo('eqbe5', {pattern: 'solid', saturation: 0, speed: 0})
         doSendTo('eqbe8', {pattern: 'solid', saturation: 0, speed: 0})
@@ -188,7 +190,7 @@ server
             }
         }
 
-        if(payload.from === 'eqbe5') {
+        if(payload.from === 'eqbe5' || payload.from === 'eqbe8') {
             if (payload.accel) {
                 if (payload.accel === 'Face 6 (LEDs down)') {
                     doSendTo('eqbe5', {brightness: 0})
@@ -196,19 +198,24 @@ server
                     doSendTo('ico', {brightness: 0})
                 } else if (payload.accel === 'Face 5 (LEDs up)') {
                     doSendTo('eqbe5', {pattern: 'solid', saturation: 0, speed: 0})
-                    doSendTo('ico', {brightness: 85})
+                    doSendTo('eqbe8', {pattern: 'solid', saturation: 0, speed: 0})
                     doSendTo('ico', {pattern: 'solid', saturation: 0, speed: 0})
                 } else if (payload.accel === 'Face 1') {
                     doSendTo('eqbe5', {pattern: 'confetti'})
+                    doSendTo('eqbe8', {pattern: 'confetti'})
                     doSendTo('ico', {pattern: 'confetti'})
                 } else if (payload.accel === 'Face 2') {
                     doSendTo('eqbe5', {pattern: 'rainbow'})
+                    doSendTo('eqbe8', {pattern: 'rainbow'})
                     doSendTo('ico', {pattern: 'rainbow'})
                 } else if (payload.accel === 'Face 3') {
                     doSendTo('eqbe5', {pattern: 'sinelon', speed: 88})
+                    doSendTo('eqbe8', {pattern: 'sinelon', speed: 88})
                     doSendTo('ico', {pattern: 'sinelon', speed: 88})
                 } else if (payload.accel === 'Face 4') {
-                    doSendTo('eqbe5', {pattern: 'solid', speed: 1, brightness: 33})
+                    doSendTo('eqbe8', {pattern: 'solid', hue: HUE.yellowRed, speed: 75, brightness: 15})
+                    doSendTo('eqbe5', {pattern: 'solid', hue: HUE.yellowRed, speed: 33, brightness: 5})
+                    doSendTo('owl', {pattern: 'solid', hue: HUE.yellowRed, speed: 75, brightness: 66})
                 }
             }
         }
