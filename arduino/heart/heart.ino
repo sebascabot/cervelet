@@ -6,7 +6,7 @@
 #include "./_shared/MyOtaUpdate.h"
 #include "./_shared/MySerial.h"
 
-#define THING  "owl"
+#define THING  "heart"
 
 // External Library
 #define FASTLED_ESP8266_RAW_PIN_ORDER
@@ -14,14 +14,15 @@
 #include "FastLED.h"
 FASTLED_USING_NAMESPACE
 
-#define DATA_PIN    14 // GPIO-14
+#define DATA_PIN    D5 // GPIO-14
+#define MOSFET_PIN  D0 // GPIO-16
 
 // LED Section
 
 #define LED_TYPE    WS2812B // vs PL9823
 #define COLOR_ORDER GRB
 
-#define DEFAULT_BRIGHTNESS   80
+#define DEFAULT_BRIGHTNESS   50
 #define DEFAULT_SPEED       100       // Range [0 to 1000]
 #define DEFAULT_SATURATION  255       // Max
 #define DEFAULT_HUE         HUE_AQUA  // Cyan
@@ -31,7 +32,7 @@ FASTLED_USING_NAMESPACE
 #define FRAME_TIME (1000 / 40) // (1000 ms / 40 frames) = 25 ms / frame
 #define RESOLUTION 1000        // 1000 div/s
 
-#define NUM_LEDS   7
+#define NUM_LEDS   150
 CRGB leds[NUM_LEDS];
 
 enum patternEnum { SOLID, RAINBOW, CONFETTI, SINELON, BPM, JUGGLE, PATTERN_COUNT };
@@ -98,6 +99,8 @@ void juggle() {
 }
 
 void setup() {
+  pinMode(MOSFET_PIN, OUTPUT);
+  digitalWrite(MOSFET_PIN, HIGH);
 
   FastLED.addLeds<LED_TYPE, DATA_PIN, COLOR_ORDER>(leds, NUM_LEDS);
   fill_solid(leds, NUM_LEDS, CHSV(DEFAULT_HUE, DEFAULT_SATURATION, 200));
@@ -179,6 +182,7 @@ void getPayload () {
               if (!root.containsKey("brightness")) {
                 gBrightness = DEFAULT_BRIGHTNESS;
                 FastLED.setBrightness(DEFAULT_BRIGHTNESS);
+                digitalWrite(MOSFET_PIN, HIGH); // Bring back power to LEDs
                 Serial.printf("  Reset brightness to default %d\n", DEFAULT_BRIGHTNESS);
               }
 
@@ -222,7 +226,10 @@ void getPayload () {
 
         if (root.containsKey("brightness")) {
           gBrightness = root["brightness"];
-          FastLED.setBrightness(gBrightness);
+          if (gBrightness) {
+            FastLED.setBrightness(gBrightness);
+          }
+          digitalWrite(MOSFET_PIN, gBrightness ? HIGH : LOW);
           Serial.printf("  Setting brightness to %d\n", gBrightness);
         }
       }
